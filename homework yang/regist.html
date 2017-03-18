@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>注册页面</title>
+	<link rel="stylesheet" href="">
+    <script type="text/javascript" src="js/jquery-1.9.0.js"></script>
+	<script src="validation/jquery.validate.js"></script>
+	<script src="validation/additional-methods.js"></script>
+	<script src="validation/messages_zh.js"></script>
+	<style>
+
+	</style>
+	<script type="text/javascript">
+        var users=[];
+        $(function(){
+            $("#fm").validate({
+                rules:{
+                    user:{
+                        required:true,
+                        rangelength:[3,10],
+                        regexp:/^[a-z_][a-z0-9_]{2,9}$/i
+                    },
+                    pwd:{
+                        required:true,
+                        rangelength:[6,14],
+                        regexp:/^[a-z$].{5,13}$/i
+                    },
+                    rpwd:{
+                    	required:true,
+                    	equalTo:"#pwd"
+                    },
+                    sex:{
+                        required:true
+                    }
+
+                },
+                messages:{
+                	user:{
+                		required:"账号不能为空",
+						rangelength:"请输入3到10位的账号",
+                	},
+                	pwd:{
+                		required:"密码不能为空",
+                		rangelength:"请输入6到14位的密码"
+                	},
+                	rpwd:{
+                		required:"密码不能为空",
+                		equalTo:"两次密码输入不一致"
+                	},
+                    sex:{
+                        required:"请输入您的性别"
+                    }
+                },
+                submitHandler:function(){                    
+                    var user={
+                        "username":$("#user").val(),
+                        "password":$("#pwd").val(),
+                        "sex":$("#sex").val()
+                    };
+                    if(localStorage.users){
+                        users=JSON.parse(localStorage.users);//向json中添加数据
+                    }
+                
+                    users.push(user);
+                    localStorage.users=JSON.stringify(users); //变成字符串
+                    // location.href="index.html";
+                    location="index.html";
+                },
+                invalidHandler:function(){
+                    alert("注册失败");
+                }
+            });
+        });
+
+
+        $.validator.addMethod("regexp",function(value,element,params){
+            return params.test(value);            
+        },"格式不正确");
+
+
+
+
+    </script>
+
+</head>
+<body>
+	<div class="fm_div">
+		<form class="fm" id="fm" method="post">
+			用户名: <input id="user" name="user" type="text">
+			<br><br>
+			密码: <input id="pwd" name="pwd" type="password">
+			<br><br>
+			确认密码: <input id="rpwd" name="rpwd" type="password">
+			<br><br>
+			性别: <input type="text" id="sex" name="sex">
+			<br><br>
+			<input type="submit" id="regist" value="确认注册">
+			<span style="margin:0px 30px;"></span>
+			<input type="reset" value="重置">
+
+		</form>
+
+
+	</div>
+</body>
+</html>

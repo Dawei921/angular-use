@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+	<title>login</title>
+	<script src="js/jquery-1.9.0.js"></script>
+	
+	<style type="text/css">
+		#vcode{
+			width:80px;
+			height:40px;
+			border:1px solid black;
+			color:skyblue;
+			font-size:22px;
+			text-align: center;
+			line-height: 40px;
+		}
+	</style>
+</head>
+
+<body>
+    <form id="frm" action="">
+        <h5>用户名： <input type="text" id="name" name="name"><em class="error1"></em></h5>
+       
+        <h5>密码：<input type="password" id="pwd" name="pwd"><em class="error2"></em></h3>
+  		<h5>验证码：<input type="code" id="code" name="code"><em class="error3"></em><p id="vcode"><span id="yanzhen"></span></p></h3>
+  		<em class="useless" name=""></em>
+        <h5><input type="button" onclick = "login()" value="点击登录"></h5>
+    </form>
+    <script type="text/javascript">
+    	$(function(){
+    		getcode();
+
+    	})
+		//生成一个随机的二维码
+		// function getcode(){
+		// 	var chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+		// 	var rand1 = Math.ceil((Math.random()*35)); //生成0-36之间的数
+		// 	var one = chars[rand1];
+		// 	var rand2 = Math.ceil((Math.random()*35)); //生成0-36之间的数
+		// 	var two = chars[rand2];
+		// 	var rand3 = Math.ceil((Math.random()*35)); //生成0-36之间的数
+		// 	var three = chars[rand3];
+		// 	var rand4 = Math.ceil((Math.random()*35)); //生成0-36之间的数
+		// 	var four = chars[rand4];
+		// 	$("span:first").html(one);
+		// 	console.log(rand1);
+		// 	$("span:eq(1)").html(two);
+		// 	console.log(rand2);
+		// 	$("span:eq(2)").html(three);
+		// 	console.log(rand3);
+		// 	$("span:last").html(four);
+		// 	console.log(rand4);
+
+		// 	//将二维码变成字符格式
+		// 	var code = one+two+three+four;
+		// 	$(".useless").attr("name",code);
+		// 	console.log(code);
+		// 	// alert($(".useless").attr("name"));
+		// }
+
+		// 法二
+		function getcode(){
+			var str="";
+			for(var i=1; i<=4; i++){
+				var num = Math.floor(Math.random()*62);
+				if(num <10){
+					str += num;
+				}else if(num<36){
+					str += String.fromCharCode(num+55);
+				}else if(num<62){
+					str += String.fromCharCode(num+61);
+				}
+
+			}
+				$("#yanzhen").html(str);
+				$(".useless").attr("name",str);
+		}
+		//验证登录
+		function login(){
+			//获得存储的用户名密码
+			var sname = localStorage.sname;
+			var spwd = localStorage.spwd;
+			//匹配输入的结果
+			var name = $("#name").val();
+			var pwd = $("#pwd").val();
+			var coder = $("#code").val();
+
+			var code=$(".useless").attr("name"); //得到页面生成的二维码
+			//不计较大小写
+			var coder = coder.toUpperCase();
+			var code = code.toUpperCase();
+			var check1;
+			var check2;
+			var check3;
+			if(sname != name){
+				$(".error1").html("用户名错误");
+				getcode();
+				check1=false;
+			}else{
+				$(".error1").html("");
+				check1 = true;
+			}
+
+			if(spwd !=pwd){
+				$(".error2").html("密码错误");
+				getcode();
+				check2=false;
+			}else{
+				$(".error2").html("");
+				check2 = true;
+			}
+
+			if(coder !=code){
+				$(".error3").html("验证码错误");
+				getcode();
+				check3 = false;
+			}else{
+				console.log(code);
+				$(".error3").html("");
+				check3 = true;
+			}
+
+			if(check1 == check2 == check3 == true){
+				$("#frm").attr("action","list.html");
+				$("#frm").submit();
+			}
+		}
+	</script>
+</body>
+
+</html>

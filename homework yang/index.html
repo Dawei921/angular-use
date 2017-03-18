@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>登录页面</title>
+    <link rel="stylesheet" href="">
+    <script type="text/javascript" src="js/jquery-1.9.0.js"></script>
+    <script src="validation/jquery.validate.js"></script>
+    <script src="validation/additional-methods.js"></script>
+    <script src="validation/messages_zh.js"></script>
+    <style>
+
+    </style>
+    <script type="text/javascript">
+        var pwd;
+        var users;
+        $(function(){
+            users=JSON.parse(localStorage.users);
+            console.log(users.length);
+            $("#fm").validate({
+                rules:{
+                    user:{
+                        required:true,
+                        myuser:true
+                    },
+                    pwd:{
+                        required:true,
+                        mypwd:true
+                    }
+
+                },
+                messages:{
+                      user:{
+                        required:"账号不能为空"
+                    },
+                    pwd:{
+                        required:"密码不能为空"
+                    }   
+                }
+            });
+        });
+
+
+        $.validator.addMethod("myuser",function(value,element,params){
+            if(value){
+                for(var i=0;i<users.length;i++){
+                    if(value == users[i].username){
+                        pwd=users[i].password;
+                        console.log(pwd);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        },"用户名不正确");
+
+
+        $.validator.addMethod("mypwd",function(value,element,params){
+            if(value == pwd){
+                return true;
+            }
+            return false;
+        },"密码不正确");
+
+    </script>
+
+</head>
+
+<body>
+    <div class="fm_div">
+        <form action="list.html" class="fm" id="fm" method="post">
+            用户名:
+            <input name="user" type="text">
+            <br>
+            <br> 密码:
+            <input name="pwd" type="password">
+            <br>
+            <br>
+            <input type="submit" value="登录">
+            <span style="margin:0px 40px;"></span>
+            <input type="reset" value="重新输入">
+        </form>
+    </div>
+</body>
+
+</html>

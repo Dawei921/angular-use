@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+	<title>Document</title>
+	<script src="js/jquery-1.9.0.js"></script>
+	<script src="validation/jquery.validate.js"></script>
+	<script src="validation/messages_zh.js"></script>
+	<script src="validation/additional-methods.js"></script>
+	<script type="text/javascript">
+	
+		$(function(){
+			$("#frm").validate({
+				rules:{
+					name:{
+						required:true,
+						rangelength:[3,10],
+						regexp:/^[a-z_]{1}[a-z0-9_]{1,8}[a-z_]{1}$/i,
+						
+					},
+					pwd:{
+						required:true,
+						rangelength:[6,14],
+						regexp:/^[a-z$]{1}[a-z0-9_$-]{5,13}/,
+					},
+					repwd:{
+						equalTo:"#pwd",
+					},
+				},
+				messages:{
+					name:{
+						required:"姓名不能为空",
+						minlength:"最少为3位",
+					
+					},
+					pwd:{
+						required:"密码不能为空",
+						rangelength:"长度范围在6到14之间",
+					
+					},
+					repwd:{
+						equalTo:"两次输入的密码不一致"
+					},
+				}
+			});
+		});
+		$.validator.addMethod("regexp",function(value,element,params){
+			return params.test(value);
+		},"格式不正确");
+		
+		//直接注册
+		function regist(){
+			//先获取输入的信息
+			var name = $("#name").val();
+			var pwd = $("#pwd").val();
+			var check = $("#sex").prop("checked");
+
+			var sex;
+			//取得性别
+			if(check){
+				sex  = "男";
+			}else{
+				sex = "女";
+			}
+			//判断用户名是否存在
+			var username = localStorage.sname1;//取出localstorage里面的sname
+			
+			if(username == name){   //判断用户名是否存在
+				alert("用户名已存在");
+			}else{
+				if(username == null){//判断用户名存储是否被占用
+					//如果为空 说明未被占用 可以写入LOCALSTORAGE
+
+					localStorage.sname1 = name;
+					localStorage.spwd1 = pwd;
+					localStorage.ssex1 = sex;
+					localStorage.count = 1;
+					
+					$("#frm").attr("action","login.html");
+					$("#frm").submit();
+				}else{
+					//如果存在 那么就添加新的Localstorage
+					var counts = localStorage.count; //借助counts来获得 例如sname1 spwd1 ssex1
+					counts++;
+					console.log(counts);
+					
+				
+					localStorage.setItem(("sname"+counts),name);
+					localStorage.setItem(("spwd"+counts),pwd);
+					localStorage.setItem(("ssex"+counts),sex);
+					
+					localStorage.count = counts;
+					
+					$("#frm").attr("action","login.html");
+					$("#frm").submit();
+				}
+
+				
+			}
+			
+		}
+	</script>
+</head>
+
+<body>
+    <form id="frm" action="">
+        <h5>请输入用户名： <input type="text" id="name" name="name"></h5>
+       
+        <h5>请输入密码：<input type="password" id="pwd" name="pwd"></h3>
+        
+        <h5>请再次输入密码：<input type="password" id="repwd" name="repwd"></h5>
+        <h5>男<input type="radio" checked="checked" id="sex" name="sex">女 <input type="radio" name="sex"></h5>
+        <h5><input type="button" onclick = "regist()" value="点击注册"><input type="reset" value="点击重置"></h5>
+    </form>
+</body>
+
+</html>
